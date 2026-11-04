@@ -309,6 +309,9 @@ h2.hd small{font:16px var(--hand);color:var(--ink-2)}
 .tr{display:grid;grid-template-columns:22px minmax(0,auto) minmax(40px,1fr) 34px 40px;gap:10px;align-items:center;font-size:18px;min-height:30px}
 .tr.zero{color:var(--ink-2)}
 .tr .sw{width:22px;height:22px;border:1.6px solid var(--line);background:var(--f)}
+/* Alkohol ohne Menge (nur DailyMind „+alkoholisch“): Punkt im Pixel */
+.grid .c.q::after,.tr .sw.q::after{content:"";position:absolute;left:50%;top:50%;width:5px;height:5px;margin:-2.5px 0 0 -2.5px;border-radius:50%;background:var(--k06)}
+.tr .sw.q{position:relative}
 .tr .nm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tr .mb{height:8px;position:relative}
 .tr .mb span{position:absolute;left:0;top:0;bottom:0;background:var(--f);border-radius:0 3px 3px 0;min-width:2px}
@@ -570,6 +573,7 @@ body{min-height:100vh;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
     migraine:'<path class="f" style="--df:var(--k18)" d="M14 30c-6 0-8-8-2-10 0-7 9-9 12-4 3-4 11-2 10 4 6 1 5 10-1 10z"/><path d="M18 36l-2 6M25 36l-2 6M32 36l-2 6"/>',
     alcohol:'<path class="f" style="--df:var(--k07)" d="M14 8h20l-2 30a2 2 0 0 1-2 2H18a2 2 0 0 1-2-2z"/><path d="M15 16h18M20 22v10M26 22v10"/>',
     smoke:'<rect class="f" style="--df:var(--k06)" x="4" y="28" width="28" height="7" rx="1"/><rect class="f" style="--df:var(--k08)" x="32" y="28" width="8" height="7" rx="1"/><path d="M42 24c-3-3 3-5 0-8s3-5 0-8M36 22c-2-2 2-4 0-6"/>',
+    water:'<path class="f" style="--df:var(--k19)" d="M16.2 22h15.6l-1.5 16.2a2 2 0 0 1-2 1.8H19.7a2 2 0 0 1-2-1.8z"/><path d="M13 8h22l-3 30a2 2 0 0 1-2 2H18a2 2 0 0 1-2-2zM38 10c2 3 3 4.5 3 6a3 3 0 0 1-6 0c0-1.5 1-3 3-6z"/>',
     caffeine:'<path class="f" style="--df:var(--k08)" d="M10 18h22v12a9 9 0 0 1-9 9h-4a9 9 0 0 1-9-9z"/><path d="M32 21h3a4 4 0 0 1 0 8h-3M16 6c-2 3 2 5 0 8M22 6c-2 3 2 5 0 8M28 6c-2 3 2 5 0 8"/>',
     travel:'<path class="f" style="--df:var(--k19)" d="M6 26l12-2 8-14 4 1-4 12 12-1 4-5 3 1-3 8 3 8-3 1-4-5-12-1 4 12-4 1-8-14-12-2z"/>'
   };
@@ -579,7 +583,9 @@ body{min-height:100vh;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
     {id:'mood',name:'Stimmung',col:'STIMMUNG',src:'DailyMind',steps:[['--k14','strahlend'],['--k12','gut'],['--k01','okay'],['--k03','trüb'],['--k04','schwer']]},
     {id:'energy',name:'Energie',col:'ENERGIE',src:'DailyMind',steps:[['--k14','voller Energie'],['--k12','hoch'],['--k01','mittel'],['--k03','niedrig'],['--k04','sehr niedrig']]},
     {id:'migraine',name:'Migräne',col:'MIGRÄNE',src:'MigraLog',steps:[['--k14','frei'],['--k12','1 leicht'],['--k01','2'],['--k03','3'],['--k04','4'],['--k05','5 stark']]},
-    {id:'alcohol',name:'Alkohol',col:'ALKOHOL',src:'PegelTracker',unit:'Standardgetränke',steps:SEVEN},
+    // Index 7: nur DailyMind „+alkoholisch“, Menge unbekannt
+    {id:'alcohol',name:'Alkohol',col:'ALKOHOL',src:'PegelTracker',src2:'DailyMind',unit:'Standardgetränke',steps:SEVEN.concat([['--k03','Menge unbekannt']])},
+    {id:'water',name:'Wasser',col:'WASSER',src:'DailyMind',steps:[['--k14','genug getrunken'],['--k04','zu wenig']]},
     {id:'smoke',name:'Tschick',col:'TSCHICK',src:'DailyMind',unit:'Stück',steps:[['--k14','keine'],['--k12','1'],['--k01','2'],['--k03','3'],['--k04','4'],['--k05','5 oder mehr']]},
     {id:'caffeine',name:'Koffein',col:'KOFFEIN',src:'PegelTracker',unit:'mg',steps:[['--k06','0'],['--k07','< 100'],['--k08','100–199'],['--k03','200–299'],['--k09','300–399'],['--k10','≥ 400']]},
     {id:'travel',name:'Reisen',col:'REISEN',src:'TravelBase',cat:true,steps:[]}
@@ -603,7 +609,7 @@ body{min-height:100vh;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
     PG={}; FIRST={};
     D.drinks.forEach(function(x){
       var t=new Date(x[0]-state.cutoff*36e5), k=iso(t.getFullYear(),t.getMonth(),t.getDate());
-      var p=PG[k]||(PG[k]={std:0,caf:0}); p.std+=x[1]; p.caf+=x[2];
+      var p=PG[k]||(PG[k]={std:0,caf:0,n:0}); p.std+=x[1]; p.caf+=x[2]; p.n++;
       if(x[1]>0&&(!FIRST.alcohol||k<FIRST.alcohol)) FIRST.alcohol=k;
       if(x[2]>0&&(!FIRST.caffeine||k<FIRST.caffeine)) FIRST.caffeine=k;
     });
@@ -619,8 +625,12 @@ body{min-height:100vh;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
     if(id==='mood'||id==='energy'){e=D.dm[k]; return e&&e[id]?5-e[id]:null;}
     if(id==='smoke'){e=D.dm[k]; return e&&e.tschick!==null&&e.tschick!==undefined?Math.min(5,e.tschick):null;}
     if(id==='migraine'){e=D.ml[k]; return e===undefined||e===null?null:Math.max(0,Math.min(5,Math.round(e)));}
-    if(id==='alcohol'){if(!FIRST.alcohol||k<FIRST.alcohol) return null; var s=rawStd(k);
-      return s<.5?0:s<2.5?1:s<4.5?2:s<6.5?3:s<8.5?4:s<10.5?5:6;}
+    // Alkohol: PegelTracker gewinnt (jedes Getränk zählt, nur alkoholfrei = trocken);
+    // sonst DailyMind: „+alkoholisch“ = Menge unbekannt, ausgefüllt ohne = trocken; beides leer = ohne Daten
+    if(id==='alcohol'){
+      if(PG[k]){var s=rawStd(k); return s<.5?0:s<2.5?1:s<4.5?2:s<6.5?3:s<8.5?4:s<10.5?5:6;}
+      e=D.dm[k]; if(!e) return null; if(e.alc) return 7; return e.enough!==null&&e.enough!==undefined?0:null;}
+    if(id==='water'){e=D.dm[k]; return e&&e.enough!==null&&e.enough!==undefined?(e.enough?0:1):null;}
     if(id==='caffeine'){if(!FIRST.caffeine||k<FIRST.caffeine) return null; var c=rawMg(k);
       return c<1?0:c<100?1:c<200?2:c<300?3:c<400?4:5;}
     if(id==='travel'){var t=yearTrips(y); for(var i=0;i<t.length;i++) if(t[i].start<=k&&(t[i].end||t[i].start)>=k) return i; return null;}
@@ -633,7 +643,9 @@ body{min-height:100vh;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
     var r=false;
     if(id==='mood'||id==='energy'||id==='smoke'){var f=id==='smoke'?'tschick':id; for(var k in D.dm){var v=D.dm[k][f]; if(v!==null&&v!==undefined&&(id==='smoke'||v)){r=true;break;}}}
     else if(id==='migraine'){for(var k2 in D.ml){if(D.ml[k2]!==null){r=true;break;}}}
-    else if(id==='alcohol'||id==='caffeine') r=!!FIRST[id];
+    else if(id==='alcohol'){r=!!FIRST.alcohol; if(!r) for(var k3 in D.dm){var e3=D.dm[k3]; if(e3.alc||(e3.enough!==null&&e3.enough!==undefined)){r=true;break;}}}
+    else if(id==='water'){for(var k4 in D.dm){if(D.dm[k4].enough!==null&&D.dm[k4].enough!==undefined){r=true;break;}}}
+    else if(id==='caffeine') r=!!FIRST[id];
     else if(id==='travel') r=D.trips.some(function(t){return t.start&&t.start<=iso(CURY,TODAY.getMonth(),TODAY.getDate())});
     return AV[id]=r;}
   function vis(){return state.order.filter(function(x){return state.on[x]&&avail(x)})}
@@ -642,7 +654,7 @@ body{min-height:100vh;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
   function num(x){return (Math.round(x*10)/10).toLocaleString('de-DE')}
   function detail(id,v,y,m,d){
     var k=m===undefined?null:iso(y,m,d);
-    if(id==='alcohol'){var s=k?rawStd(k):0; return s<.05?'keine Standardgetränke':num(s)+(Math.abs(s-1)<.05?' Standardgetränk':' Standardgetränke');}
+    if(id==='alcohol'){if(v===7) return 'getrunken, Menge unbekannt (DailyMind)'; var s=k?rawStd(k):0; return s<.05?'keine Standardgetränke':num(s)+(Math.abs(s-1)<.05?' Standardgetränk':' Standardgetränke');}
     if(id==='smoke') return ['keine Tschick','1 Stück','2 Stück','3 Stück','4 Stück','5 oder mehr'][v];
     if(id==='caffeine') return Math.round(k?rawMg(k):0)+' mg';
     if(id==='migraine') return v===0?'schmerzfrei':'Schmerz '+v+' von 5';
@@ -660,6 +672,7 @@ body{min-height:100vh;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
         var cls='c'+(d===1?' t':'')+(m===0?' l':''),at='';
         if(d>dim(y,m)){h+='<div class="'+cls+' x" aria-hidden="true"></div>';continue;}
         var v=val(id,y,m,d); if(v!==null&&l.steps[v]) at=' data-v="'+v+'" style="--f:var('+l.steps[v][0]+')"';
+        if(id==='alcohol'&&v===7) cls+=' q';
         if(y===CURY&&m===TODAY.getMonth()&&d===TODAY.getDate()) cls+=' today';
         var sel=!mini&&state.sel&&state.sel[0]===m&&state.sel[1]===d; if(sel) cls+=' sel';
         h+=mini?'<div class="'+cls+'"'+at+'></div>':'<button class="'+cls+'"'+at+' type="button" data-m="'+m+'" data-d="'+d+'" tabindex="'+(sel?0:-1)+'" aria-label="'+d+'. '+MNAME[m]+(v!==null?': '+esc(detail(id,v,y,m,d)):'')+'"></button>';
@@ -680,7 +693,7 @@ body{min-height:100vh;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
     var l=L(state.layer);
     $('collage').innerHTML=collage(l.col);
     $('doodle').innerHTML=DOO[l.id];
-    $('src').textContent='aus '+(SOURCES[l.src].label||l.src)+(l.unit?' · '+l.unit:'');
+    $('src').textContent='aus '+(SOURCES[l.src].label||l.src)+(l.src2?' + '+l.src2:'')+(l.unit?' · '+l.unit:'');
     $('chips').innerHTML=V.map(function(id,i){
       return '<button type="button" data-l="'+id+'" aria-pressed="'+(id===state.layer)+'" style="--tb:var('+TAPES[i%7]+');--r:'+((i%3)-1)*1.2+'deg"><svg viewBox="0 0 48 48" aria-hidden="true">'+DOO[id]+'</svg>'+L(id).name+'</button>'}).join('');
     $('swipehint').hidden=V.length<2;
@@ -700,8 +713,8 @@ body{min-height:100vh;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
     h+='<div class="waffle wob" role="img" aria-label="Verteilung der Farben in Prozent">'+cells.map(function(c){return '<i style="--f:var('+c+')"></i>'}).join('')+'</div>';
     var max=Math.max.apply(null,rows.map(function(r){return r.n}))||1;
     h+='<div class="tl">'+rows.map(function(r){var p=Math.round(r.n/k.n*100);
-      return '<div class="tr'+(r.n?'':' zero')+'"><i class="sw wob" style="--f:var('+r.v+')"></i><span class="nm">'+esc(r.nm)+'</span><span class="mb"><span style="width:'+(r.n/max*100)+'%;--f:var('+r.v+')"></span></span><b>'+r.n+'</b><small>'+p+' %</small></div>'}).join('')+'</div>';
-    var main=l.id==='alcohol'?k.c[0]+' trockene Tage':l.id==='smoke'?k.c[0]+' rauchfreie Tage':l.cat?k.n+' Tage unterwegs':k.n+' von '+days+' Tagen erfasst';
+      return '<div class="tr'+(r.n?'':' zero')+'"><i class="sw wob'+(l.id==='alcohol'&&r.i===7?' q':'')+'" style="--f:var('+r.v+')"></i><span class="nm">'+esc(r.nm)+'</span><span class="mb"><span style="width:'+(r.n/max*100)+'%;--f:var('+r.v+')"></span></span><b>'+r.n+'</b><small>'+p+' %</small></div>'}).join('')+'</div>';
+    var main=l.id==='alcohol'?k.c[0]+' trockene Tage':l.id==='smoke'?k.c[0]+' rauchfreie Tage':l.id==='water'?k.c[0]+' Tage genug getrunken':l.cat?k.n+' Tage unterwegs':k.n+' von '+days+' Tagen erfasst';
     h+='<p class="sum">'+main+(l.cat?'':' · Tage ohne Eintrag bleiben weiß')+'</p>';
     $('tally').innerHTML=h;
   }
@@ -731,11 +744,12 @@ body{min-height:100vh;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
   /* ---------- Übersicht: Analysen ---------- */
   var SCORE=[5,4,3,2,1];
   function stats(y){
-    var s={mood:[0,0],energy:[0,0],dry:0,alcN:0,drinks:0,mig:0,migN:0,caf:[0,0],trav:0,sf:0,smN:0,cigs:0};
+    var s={mood:[0,0],energy:[0,0],dry:0,alcN:0,drinks:0,mig:0,migN:0,caf:[0,0],trav:0,sf:0,smN:0,cigs:0,wy:0,wN:0};
     each(y,function(m,d){
       var v=val('mood',y,m,d); if(v!==null){s.mood[0]+=SCORE[v];s.mood[1]++;}
       v=val('energy',y,m,d); if(v!==null){s.energy[0]+=SCORE[v];s.energy[1]++;}
       v=val('alcohol',y,m,d); if(v!==null){s.alcN++; if(v===0) s.dry++; s.drinks+=rawStd(iso(y,m,d));}
+      v=val('water',y,m,d); if(v!==null){s.wN++; if(v===0) s.wy++;}
       v=val('smoke',y,m,d); if(v!==null){s.smN++; if(v===0) s.sf++; s.cigs+=[0,1,2,3,4,5.5][v];}
       v=val('migraine',y,m,d); if(v!==null){s.migN++; if(v>0) s.mig++;}
       v=val('caffeine',y,m,d); if(v!==null){s.caf[0]+=rawMg(iso(y,m,d));s.caf[1]++;}
@@ -759,6 +773,7 @@ body{min-height:100vh;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
       {id:'mood',n:f1(am),u:'/ 5',l:'Ø Stimmung',c:arrow(am,py&&avg(py.mood),true,f1),b:'--k11'},
       {id:'energy',n:f1(ae),u:'/ 5',l:'Ø Energie',c:arrow(ae,py&&avg(py.energy),true,f1),b:'--k07'},
       {id:'alcohol',n:dry,u:'%',l:'trockene Tage',c:arrow(dry,py&&pct(py.dry,py.alcN),true,function(x){return Math.round(x)+' Pkt.'}),b:'--k18'},
+      {id:'water',n:pct(s.wy,s.wN),u:'%',l:'genug getrunken',c:arrow(pct(s.wy,s.wN),py&&py.wN?pct(py.wy,py.wN):null,true,function(x){return Math.round(x)+' Pkt.'}),b:'--k06'},
       {id:'smoke',n:sf,u:'%',l:'rauchfreie Tage',c:arrow(sf,py&&py.smN?pct(py.sf,py.smN):null,true,function(x){return Math.round(x)+' Pkt.'}),b:'--k06'},
       {id:'migraine',n:s.mig,u:'Tage',l:'mit Migräne',c:arrow(s.mig,py&&py.mig,false,function(x){return Math.round(x)}),b:'--k11'},
       {id:'caffeine',n:caf,u:'mg',l:'Ø Koffein/Tag',c:arrow(caf,py&&Math.round(avg(py.caf)),false,function(x){return Math.round(x)+' mg'}),b:'--k12'},
@@ -769,7 +784,7 @@ body{min-height:100vh;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
 
     var A=[[0,0],[0,0],[0,0]], C=[[0,0],[0,0],[0,0]], T=[[0,0],[0,0]], W=[[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]], S=[[0,0],[0,0]];
     each(y,function(m,d){var p=prev(y,m,d), pa=val('alcohol',p[0],p[1],p[2]), al=val('alcohol',y,m,d), mo=val('mood',y,m,d), en=val('energy',y,m,d), ca=val('caffeine',y,m,d), mi=val('migraine',y,m,d), sm=val('smoke',y,m,d), tr=val('travel',y,m,d)!==null;
-      if(mo!==null&&pa!==null){var g=pa===0?0:pa===1?1:2; A[g][0]+=SCORE[mo]; A[g][1]++;}
+      if(mo!==null&&pa!==null&&pa!==7){var g=pa===0?0:pa===1?1:2; A[g][0]+=SCORE[mo]; A[g][1]++;}
       if(mi!==null&&ca!==null){var g2=ca<=2?0:ca<=4?1:2; C[g2][1]++; if(mi>0) C[g2][0]++;}
       if(mo!==null){var g3=tr?0:1; T[g3][0]+=SCORE[mo]; T[g3][1]++;}
       if(en!==null){var wd=(new Date(y,m,d).getDay()+6)%7; W[wd][0]+=SCORE[en]; W[wd][1]++;}
@@ -810,6 +825,7 @@ body{min-height:100vh;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
              ['Ø Energie',f1(avg(s.energy)),f1(avg(py.energy)),avg(s.energy)-avg(py.energy),true,'energy'],
              ['trockene Tage',s.dry,py.dry,s.dry-py.dry,true,'alcohol'],
              ['Standardgetränke',Math.round(s.drinks),Math.round(py.drinks),s.drinks-py.drinks,false,'alcohol'],
+             ['Tage genug getrunken',s.wy,py.wy,s.wy-py.wy,true,'water'],
              ['rauchfreie Tage',s.sf,py.sf,s.sf-py.sf,true,'smoke'],
              ['Tschick gesamt',Math.round(s.cigs),Math.round(py.cigs),s.cigs-py.cigs,false,'smoke'],
              ['Migränetage',s.mig,py.mig,s.mig-py.mig,false,'migraine'],
@@ -1143,14 +1159,17 @@ body{min-height:100vh;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
           if (!this.lastSync) YIP.render();
         }
       },
-      // DailyMind; fehlen die Tschick-Spalten noch, ohne sie weiterlesen
+      // DailyMind; fehlen neuere Spalten (Trinken, Tschick) noch, ohne sie weiterlesen
       async loadDailyMind(uid) {
         const q = cols => fetchAll(() => this.sb.from('dailymind_entries').select(cols).eq('user_id', uid).order('entry_date'));
+        const sets = ['entry_date, mood, energy, tschick, tschick_tags, drank_enough, drank_alcohol', 'entry_date, mood, energy, tschick, tschick_tags', 'entry_date, mood, energy'];
         let rows;
-        try { rows = await q('entry_date, mood, energy, tschick, tschick_tags'); }
-        catch (e) { if (e?.code !== '42703') throw e; rows = await q('entry_date, mood, energy'); }
+        for (let i = 0; ; i++) {
+          try { rows = await q(sets[i]); break; }
+          catch (e) { if (e?.code !== '42703' || i === sets.length - 1) throw e; }
+        }
         const out = {};
-        rows.forEach(r => { out[r.entry_date] = { mood: r.mood, energy: r.energy, tschick: r.tschick ?? null, tags: r.tschick_tags || [] }; });
+        rows.forEach(r => { out[r.entry_date] = { mood: r.mood, energy: r.energy, tschick: r.tschick ?? null, tags: r.tschick_tags || [], enough: r.drank_enough ?? null, alc: r.drank_alcohol === true }; });
         return out;
       },
 
