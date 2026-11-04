@@ -3,7 +3,7 @@
 ## Wofür
 
 Ein Blick aufs ganze Jahr, wie im Bullet Journal: Wie ging es mir, wie viel Energie hatte ich,
-wann kam die Migräne, wann wurde getrunken, geraucht oder Kaffee getrunken, wann war ich unterwegs?
+wann kam die Migräne, wann wurde getrunken, geraucht oder Kaffee getrunken, war es genug Wasser, wann war ich unterwegs?
 Die Daten kommen aus den anderen mvs2-Apps; YearInPixels erfasst nichts selbst.
 
 ## Für wen

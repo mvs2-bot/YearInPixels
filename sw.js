@@ -3,7 +3,7 @@
    - Bibliotheken und Schriften: aus dem Speicher
    - Supabase-Anfragen werden NICHT gespeichert (Daten der anderen Apps bleiben privat).
      Den letzten Stand fürs Offline-Anzeigen hält die App selbst (localStorage, je Konto). */
-const P="yearinpixels-",V=P+"v2";
+const P="yearinpixels-",V=P+"v3";
 const CORE=['./','index.html','shared/ios-nav.js','manifest.json','icon.svg','icon.png','apple-touch-icon.png','icons/icon-192.png','icons/icon-512.png','icons/icon-maskable-512.png','icons/favicon-32.png'];
 const EXTRA=["https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js","https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"];
 const CDN=/cdn\.jsdelivr\.net|fonts\.googleapis\.com|fonts\.gstatic\.com/;
