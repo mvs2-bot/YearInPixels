@@ -1,0 +1,18 @@
+{
+  "id": "yearinpixels-app",
+  "name": "YearInPixels",
+  "short_name": "YearInPixels",
+  "description": "Dein Jahr als Pixel-Tracker aus DailyMind, Migräne Tracker, PegelTracker und TravelBase.",
+  "lang": "de",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#fdfaf3",
+  "theme_color": "#fdfaf3",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}
