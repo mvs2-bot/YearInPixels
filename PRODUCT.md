@@ -3,7 +3,7 @@
 ## Wofür
 
 Ein Blick aufs ganze Jahr, wie im Bullet Journal: Wie ging es mir, wie viel Energie hatte ich,
-wann kam die Migräne, wann wurde getrunken, geraucht oder Kaffee getrunken, war es genug Wasser, wann war ich unterwegs?
+wann kamen die Kopfschmerzen, wann wurde getrunken, geraucht oder Kaffee getrunken, war es genug Wasser, wann war ich unterwegs?
 Die Daten kommen aus den anderen mvs2-Apps; YearInPixels erfasst nichts selbst.
 
 ## Für wen
@@ -20,7 +20,7 @@ Mitglieder der mvs2-Apps, die mindestens eine der Quell-Apps nutzen. Mobil zuers
 
 ## Später
 
-- Tagesblatt: Link direkt zum Tag in der Quell-App (braucht Deep-Links in DailyMind, Migräne Tracker, PegelTracker).
+- Tagesblatt: Link direkt zum Tag in der Quell-App (braucht Deep-Links in DailyMind, KopfschmerzTracker, PegelTracker).
 - Eigene Notiz oder Farbe pro Tag direkt in YearInPixels (eigene Tabelle nötig).
 - Weitere Ebenen, z. B. Schlaf oder Sport, sobald eine App das erfasst.
 - Export des Jahres als Bild oder PDF zum Ausdrucken ins Journal.

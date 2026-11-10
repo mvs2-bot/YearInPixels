@@ -1,7 +1,7 @@
 # YearInPixels
 
 Single-File-PWA aus der mvs2-App-Familie: dein Jahr als Pixel-Tracker im Bullet-Journal-Stil.
-YearInPixels erfasst selbst nichts. Es liest nur deine eigenen Einträge aus DailyMind, dem Migräne Tracker,
+YearInPixels erfasst selbst nichts. Es liest nur deine eigenen Einträge aus DailyMind, dem KopfschmerzTracker,
 dem PegelTracker und TravelBase und malt daraus ein 12 × 31-Raster pro Ebene.
 
 URL: https://mvs2-bot.github.io/YearInPixels/
@@ -22,7 +22,7 @@ URL: https://mvs2-bot.github.io/YearInPixels/
 | --- | --- | --- | --- |
 | Stimmung | `dailymind_entries.mood` | 1–5 | strahlend, gut, okay, trüb, schwer |
 | Energie | `dailymind_entries.energy` | 1–5 | voller Energie … sehr niedrig |
-| Migräne | `migralog_entries.pain` | 0–5 (DB 0–10, über 5 zählt als 5) | frei, 1 … 5 stark |
+| Kopfschmerzen | `migralog_entries.pain` | 0–5 (DB 0–10, über 5 zählt als 5) | frei, 1 … 5 stark |
 | Alkohol | `pegel_drinks`, sonst `dailymind_entries.drank_alcohol` | Standardgetränke (10 g) = ml × Vol-% / 100 × 0,8 / 10 | 0, 1–2, 3–4, 5–6, 7–8, 9–10, > 10, Menge unbekannt (Punkt) |
 | Wasser | `dailymind_entries.drank_enough` | „Ja, klar doch“ / „Leider, nein“ | genug getrunken, zu wenig |
 | Tschick | `dailymind_entries.tschick` + `tschick_tags` | 0–5 (5 = „5 oder mehr“) | keine, 1 … 5 oder mehr |
@@ -42,7 +42,7 @@ URL: https://mvs2-bot.github.io/YearInPixels/
 - **Jahr**: Ebenen als Klebeband-Kacheln (Wischen über dem Raster wechselt die Ebene), Pixel-Raster,
   Farbzählung als 20 × 5-Waffel mit Liste, Tagesblatt mit allen Ebenen eines Tages, nach App gruppiert.
 - **Übersicht**: Kennzahlen mit Vorjahr, Vergleiche (Stimmung nach dem Vorabend, Wann getschickt?,
-  Migräne nach Koffein, Unterwegs oder zu Hause?, Energie je Wochentag), Stimmung je Monat, Jahrestabelle, alle Ebenen klein.
+  Kopfschmerzen nach Koffein, Unterwegs oder zu Hause?, Energie je Wochentag), Stimmung je Monat, Jahrestabelle, alle Ebenen klein.
 - **Ebenen**: ein/aus, Reihenfolge, Tagesgrenze. Gespeichert in `yearinpixels_settings`.
 
 ## Rollen und Datenschutz
