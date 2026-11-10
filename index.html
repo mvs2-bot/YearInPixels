@@ -406,6 +406,14 @@ body{min-height:100vh;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
   .in-app .tabs,.in-app .acts{display:none!important}
   .in-app .main{padding-bottom:calc(62px + 36px + env(safe-area-inset-bottom,0px))}
   #v-pr:not([hidden]){display:block}
+  /* Jahresansicht: Titel mittig ohne „aus …“, Jahresumschaltung kompakter */
+  .title{justify-content:center;margin:8px 0 6px}
+  .title .src{display:none}
+  .yearbar{margin:6px 0 4px}
+  .year{font-size:20px}
+  .year button{width:34px;height:34px;font-size:24px}
+  .year span{padding:0 10px}
+  .year .ring{left:28px;right:28px;width:calc(100% - 56px);top:-2px;bottom:-2px;height:calc(100% + 4px)}
   /* Tagesblatt: letzte Zeilen nicht unter der Leiste verstecken */
   .in-app .card{padding-bottom:calc(15px + 72px + env(safe-area-inset-bottom,0px))}
 }
