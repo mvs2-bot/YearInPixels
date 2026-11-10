@@ -406,6 +406,10 @@ body{min-height:100vh;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
   .in-app .tabs,.in-app .acts{display:none!important}
   .in-app .main{padding-bottom:calc(62px + 36px + env(safe-area-inset-bottom,0px))}
   #v-pr:not([hidden]){display:block}
+  /* Jahr wählt man am Handy im Profil; im Titel steht es klein dabei */
+  #yearbar{display:none!important}
+  .title .ytag{display:inline;font:20px var(--hand);color:var(--ink-2);align-self:center}
+  .ynote:not([hidden]){display:flex}
   /* Jahresansicht: Titel mittig ohne „aus …“, Jahresumschaltung kompakter */
   .title{justify-content:center;margin:8px 0 6px}
   .title .src{display:none}
@@ -417,6 +421,15 @@ body{min-height:100vh;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
   /* Tagesblatt: letzte Zeilen nicht unter der Leiste verstecken */
   .in-app .card{padding-bottom:calc(15px + 72px + env(safe-area-inset-bottom,0px))}
 }
+
+.ytag,.ynote{display:none}
+.ynote{justify-content:center;align-items:center;gap:6px;flex-wrap:wrap;margin:10px 0 0;padding:6px 12px;font-size:17px;color:var(--ink-2);border:1.5px dashed var(--edge)}
+.ynote b{font-weight:400;color:var(--ink)}
+.ynote button{min-height:36px;font-size:17px;color:var(--ink);text-decoration:underline;text-decoration-color:var(--orange);text-underline-offset:3px}
+.pyear{margin-left:auto;display:flex;align-items:center;font:22px var(--bubble)}
+.pyear span{min-width:64px;text-align:center}
+.pyear button{width:44px;height:44px;border-radius:50%;font:28px/1 var(--hand)}
+.pyear button:disabled{opacity:.25;cursor:default}
 
 /* Profil (nur Handy): Kontomenü als Seite */
 .prof{max-width:440px;margin:6px auto 0;display:grid;gap:18px}
@@ -572,12 +585,15 @@ body{min-height:100vh;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
           <svg class="rl wob" viewBox="0 0 200 10" preserveAspectRatio="none" aria-hidden="true"><path d="M2 5 C100 8,150 3,198 6"/></svg>
         </div>
 
+        <!-- Handy: Jahr wird im Profil gewählt; bei einem früheren Jahr hier der Weg zurück -->
+        <p class="ynote" id="ynote" hidden>Du siehst <b id="ynY"></b> · <button type="button" id="yBack"></button></p>
+
         <div id="v-jahr">
           <div class="nodata" id="jahrEmpty" hidden><h2 class="hd">Noch keine Pixel</h2><p>Sobald du DailyMind, den KopfschmerzTracker, den PegelTracker oder TravelBase nutzt, füllt sich hier dein Jahr. Ebenen erscheinen erst, wenn es Daten dazu gibt.</p></div>
           <div id="jahrBody">
           <div class="chips" id="chips" role="group" aria-label="Ebene wählen"></div>
           <p class="swipehint" id="swipehint">Tipp: Über dem Raster nach links oder rechts wischen wechselt die Ebene.</p>
-          <div class="title"><div class="collage" id="collage"></div><svg class="doodle" id="doodle" viewBox="0 0 48 48" aria-hidden="true"></svg><span class="src" id="src"></span></div>
+          <div class="title"><div class="collage" id="collage"></div><svg class="doodle" id="doodle" viewBox="0 0 48 48" aria-hidden="true"></svg><span class="ytag" id="ytag"></span><span class="src" id="src"></span></div>
           <div class="grid wob" id="grid" role="grid" aria-label="Jahresraster"></div>
           </div>
         </div>
@@ -617,6 +633,10 @@ body{min-height:100vh;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
                   <button type="button" :aria-pressed="!dark" @click="dark && toggleTheme()">Hell</button>
                   <button type="button" :aria-pressed="dark" @click="!dark && toggleTheme()">Dunkel</button>
                 </div>
+              </div>
+              <div class="pm-theme">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>Jahr
+                <div class="pyear"><button id="pyPrev" type="button" aria-label="Vorjahr">‹</button><span id="pyLbl"></span><button id="pyNext" type="button" aria-label="Nächstes Jahr">›</button></div>
               </div>
               <div class="pm-sync" role="status">
                 <div><i :class="syncLevel()"></i><span><b>Cloud-Sync</b> · <span x-text="syncText()"></span></span></div>
@@ -988,12 +1008,16 @@ body{min-height:100vh;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
     $('missing').innerHTML=miss.length?'<b>Noch ohne Daten:</b> '+miss.map(function(l){return l.name+' ('+(SOURCES[l.src].label||l.src)+')'}).join(', ')+'. Diese Ebenen erscheinen automatisch, sobald es dort Einträge gibt.':'';
   }
   var MOB=matchMedia('(max-width: 767.98px)');
-  function show(v){if(v==='pr'&&!MOB.matches) v='jahr'; state.view=v;
+  /* Jahreszahl überall gleich halten: Jahresleiste, Profil, Titel und Hinweis */
+  function syncYear(v){var y=state.year;
+    $('yLbl').textContent=y; $('pyLbl').textContent=y; $('ytag').textContent=y;
+    $('yPrev').disabled=$('pyPrev').disabled=y<=MINY; $('yNext').disabled=$('pyNext').disabled=y>=MAXY;
+    $('ynote').hidden=(y===CURY||(v!=='jahr'&&v!=='ov')); $('ynY').textContent=y; $('yBack').textContent='zurück zu '+CURY;}
+  function show(v){if(v==='pr'&&!MOB.matches) v='jahr'; state.view=v; syncYear(v);
     ['jahr','ov','eb','pr'].forEach(function(k){$('v-'+k).hidden=(k!==v); if(k!=='pr') $('t-'+k).setAttribute('aria-selected',k===v)});
     document.querySelectorAll('#tabbar button').forEach(function(b){if(b.dataset.v===v) b.setAttribute('aria-current','page'); else b.removeAttribute('aria-current');});
     if(v==='pr'){closeCard(); $('pR').hidden=true; $('spread').classList.add('one'); $('yearbar').hidden=true; return;}
     syncTravel(); $('pR').hidden=(v!=='jahr'); $('spread').classList.toggle('one',v!=='jahr'); $('yearbar').hidden=(v==='eb');
-    $('yPrev').disabled=state.year<=MINY; $('yNext').disabled=state.year>=MAXY;
     if(v==='jahr') renderJahr(); if(v==='ov') renderOv(); if(v==='eb') renderEb();}
 
   $('grid').addEventListener('click',function(e){var b=e.target.closest('button.c'); if(b) openCard(+b.dataset.m,+b.dataset.d);});
@@ -1031,7 +1055,8 @@ body{min-height:100vh;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
     if(e.key!=='ArrowRight'&&e.key!=='ArrowLeft') return; var n=k[(i+(e.key==='ArrowRight'?1:2))%3]; show(n); saveUi(); $('t-'+n).focus();});
   function setYear(y){if(y<MINY||y>MAXY) return; state.year=y; $('yLbl').textContent=y;
     state.sel=(y===CURY?[TODAY.getMonth(),TODAY.getDate()]:null); memo={}; closeCard(); show(state.view);}
-  $('yPrev').onclick=function(){setYear(state.year-1)}; $('yNext').onclick=function(){setYear(state.year+1)};
+  $('yPrev').onclick=$('pyPrev').onclick=function(){setYear(state.year-1)}; $('yNext').onclick=$('pyNext').onclick=function(){setYear(state.year+1)};
+  $('yBack').onclick=function(){setYear(CURY)};
   $('cut').onchange=function(){state.cutoff=+this.value; buildPegel(); saveSettings(); renderEb();};
   document.addEventListener('keydown',function(e){if(e.key==='Escape') closeCard();});
 
