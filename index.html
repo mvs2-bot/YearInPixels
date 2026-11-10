@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>YearInPixels</title>
-  <meta name="description" content="YearInPixels – dein Jahr als Pixel-Tracker aus DailyMind, Migräne Tracker, PegelTracker und TravelBase.">
+  <meta name="description" content="YearInPixels – dein Jahr als Pixel-Tracker aus DailyMind, KopfschmerzTracker, PegelTracker und TravelBase.">
   <meta name="theme-color" content="#fdfaf3" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#24211c" media="(prefers-color-scheme: dark)">
   <link rel="icon" type="image/svg+xml" href="icon.svg">
@@ -134,6 +134,7 @@ h2,h3,h4,p{margin:0}
 .title{display:flex;align-items:flex-end;gap:10px;flex-wrap:wrap;margin:10px 0 8px}
 .collage{display:flex;gap:1px;align-items:flex-end;flex-wrap:wrap}
 .collage span{display:inline-grid;place-items:center;font:30px/1 var(--bubble);padding:4px 4px 2px;min-width:25px}
+@media (max-width:1023px){.collage.lg span{font-size:24px;min-width:20px;padding:3px 3px 2px}}  /* KOPFSCHMERZEN bleibt am Handy in einer Zeile */
 .c0{background:#1f1c18;color:#fdfaf3;border-radius:4px;box-shadow:0 0 0 1px var(--line)}
 .c1{color:var(--k01);-webkit-text-stroke:1.4px var(--k20);paint-order:stroke fill;text-shadow:2px 2px 0 var(--k20)}
 .c2{background:var(--k20);color:var(--k01);border-radius:3px}
@@ -154,6 +155,7 @@ h2,h3,h4,p{margin:0}
 .chips button svg *{fill:none;stroke:#1f1c18;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
 .chips button svg .f{fill:rgba(255,255,255,.55)}
 .chips button:hover{opacity:.9}
+.chips button.lg{font-size:13px;letter-spacing:-.2px}  /* lange Namen (Kopfschmerzen) passen so in die Kachel */
 .chips button[aria-pressed="true"]{opacity:1;transform:rotate(var(--r,0deg)) translateY(-2px)}
 .chips button[aria-pressed="true"]::after{content:"";position:absolute;left:18%;right:18%;bottom:3px;height:3px;background:#1f1c18;border-radius:2px}
 @media (prefers-reduced-motion:reduce){.chips button{transition:none}}
@@ -223,6 +225,7 @@ h2,h3,h4,p{margin:0}
 .row i{width:18px;height:18px;margin-top:6px;border:1.6px solid var(--line);background:var(--f,var(--cell))}
 .row.none i{border-style:dashed;opacity:.55}
 .row .k{font-size:17px;color:var(--ink-2)}
+.row .k.lg{font-size:13px;letter-spacing:-.4px;white-space:nowrap}
 .row .v{color:var(--ink)}
 .row.none .v{color:var(--ink-2)}
 .row .tg{display:inline-block;margin-left:8px;padding:0 6px;line-height:22px;font-size:16px;background:color-mix(in srgb,var(--k12) 38%,transparent);transform:rotate(-1deg)}
@@ -378,13 +381,73 @@ body{min-height:100vh;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
 .grp a{text-decoration-thickness:1.5px}
 .offline{font:12px var(--ui);color:var(--ink-2);margin:8px 0 0}
 
+/* ---------- Untere Tab-Leiste: NUR auf dem Handy (< 768 px). Darüber bleibt alles wie bisher. ---------- */
+/* Schwebende Leiste: abgerundete Karte mit Schatten, aktive Seite als Textmarker-Pille in der Farbe des Reiters */
+.tabbar,#v-pr{display:none}
+@media (max-width:767.98px){
+  .tabbar{position:fixed;z-index:30;left:calc(12px + env(safe-area-inset-left,0px));right:calc(12px + env(safe-area-inset-right,0px));
+    bottom:calc(10px + env(safe-area-inset-bottom,0px));display:grid;grid-template-columns:repeat(4,1fr);
+    height:62px;padding:0 6px;border-radius:22px;background:var(--paper);
+    box-shadow:0 8px 28px rgba(0,0,0,.16),0 0 0 .5px rgba(0,0,0,.06)}
+  :root.dark .tabbar{background:#2c2822;box-shadow:0 8px 28px rgba(0,0,0,.6),0 0 0 .5px rgba(255,255,255,.1)}
+  .tabbar button{position:relative;isolation:isolate;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font:15px/1 var(--hand);color:var(--ink)}
+  .tabbar button svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  .tabbar button::before{content:"";position:absolute;inset:7px 5px;z-index:-1;border-radius:16px;background:var(--hl);opacity:0}
+  .tabbar button[aria-current="page"]::before{opacity:var(--hlo)}
+  .tabbar button[aria-current="page"] svg{stroke-width:2.3}
+  .tabbar [data-v="jahr"]{--hl:var(--k12)}.tabbar [data-v="ov"]{--hl:var(--k18)}.tabbar [data-v="eb"]{--hl:var(--k07)}.tabbar [data-v="pr"]{--hl:var(--k11)}
+  :root.dark .tabbar [data-v="pr"]{--hl:var(--k12)}
+  .tabbar .bar-ava{position:relative;width:26px;height:26px;flex:0 0 26px;border-radius:50%;display:grid;place-items:center;color:#fff;font:600 11px var(--ui);border:1.5px solid var(--line)}
+  .tabbar .bar-ava img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:50%}
+  .tabbar .bar-ava .sync-dot{right:-3px;bottom:-3px;width:10px;height:10px}
+  :root.dark .tabbar .bar-ava .sync-dot{border-color:#2c2822}
+  .tabbar .bar-ava .sync-dot.pending{background:var(--k02)}.tabbar .bar-ava .sync-dot.error{background:var(--k04)}
+  /* Reiter, Mond und Profilbild im Kopf übernimmt die Leiste unten */
+  .in-app .tabs,.in-app .acts{display:none!important}
+  .in-app .main{padding-bottom:calc(62px + 36px + env(safe-area-inset-bottom,0px))}
+  #v-pr:not([hidden]){display:block}
+  /* Tagesblatt: letzte Zeilen nicht unter der Leiste verstecken */
+  .in-app .card{padding-bottom:calc(15px + 72px + env(safe-area-inset-bottom,0px))}
+}
+
+/* Profil (nur Handy): Kontomenü als Seite */
+.prof{max-width:440px;margin:6px auto 0;display:grid;gap:18px}
+.prof .gcard{padding:20px 18px 14px}
+.prof .pm-head{flex-direction:column;text-align:center;gap:10px;padding:6px 6px 14px}
+.prof .pm-head>div{width:100%}
+.prof .pm-ava{flex:none;width:96px;height:96px;font-size:34px;border:1.8px solid var(--line);box-shadow:0 0 0 3px var(--paper),0 0 0 5px var(--k14)}
+.prof .pm-head b{font-size:24px}
+.prof .pm-head small{font-size:13px;margin-top:2px}
+.prof .pm-role{margin-top:8px}
+.prof .pm-item{min-height:48px;font-size:19px}
+.pm-theme{display:flex;align-items:center;gap:10px;min-height:52px;padding:4px 4px 4px 10px;font-size:19px}
+.pm-theme svg{width:18px;height:18px;flex:none;stroke:var(--ink-2);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.seg{margin-left:auto;display:grid;grid-template-columns:1fr 1fr;width:170px;border:1.6px solid var(--line);border-radius:18px 14px 18px 16px;overflow:hidden}
+.seg button{min-height:38px;font-size:17px;color:var(--ink-2)}
+.seg button+button{border-left:1.6px solid var(--line)}
+.seg button[aria-pressed="true"]{color:#1f1c18;background:var(--k12)}
+.prof .kpis{margin-top:0}
+.qsrc{display:grid;gap:2px;margin-top:2px}
+.qsrc a{display:grid;grid-template-columns:10px minmax(0,1fr) auto;gap:10px;align-items:center;min-height:44px;padding:0 10px;font-size:19px;color:var(--ink);text-decoration:none;border-bottom:1.5px dashed var(--edge)}
+.qsrc a:last-child{border-bottom:0}
+.qsrc i{width:9px;height:9px;border-radius:50%;background:var(--k14)}
+.qsrc i.no{background:transparent;border:1.5px solid var(--ink-2)}
+.qsrc small{font:12px var(--ui);color:var(--ink-2)}
+.prof h3{font:22px var(--hand);text-decoration:underline wavy var(--orange);text-underline-offset:5px;margin:0 0 6px 10px}
+
+/* Start: Ladeanzeige mit Hinweis und „Neu laden“, falls es hängt */
+.load-gate{text-align:center;padding-top:80px}
+.load-gate .spin{margin:0 auto}
+.load-msg{font:15px/1.5 var(--ui);color:var(--ink-2);margin:16px auto 0;max-width:34ch}
+.load-gate .btn{width:auto;display:inline-block;padding:0 26px}
+
 </style>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js"></script>
-  <script src="shared/ios-nav.js" defer></script>
+  <script src="shared/ios-nav.js" data-bottom="84" defer></script>
 </head>
 
-<body x-data="yearInPixels()">
+<body x-data="yearInPixels()" :class="{ 'in-app': view === 'app' }">
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <filter id="wob"><feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="1" seed="4"/><feDisplacementMap in="SourceGraphic" scale="1.4"/></filter>
@@ -439,14 +502,19 @@ body{min-height:100vh;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
 
 <div class="wrap main">
 
-  <section x-show="view === 'loading'" aria-label="Wird geladen"><div class="spin"></div></section>
+  <!-- Start: sichtbar, bis Anmeldung oder App bereit ist. Hängt es, gibt es nach 8 s „Neu laden“. -->
+  <section id="loadView" x-show="view === 'loading'" class="load-gate" aria-live="polite">
+    <div class="spin"></div>
+    <p id="loadMsg" class="load-msg" x-text="bootMsg">YearInPixels wird geladen …</p>
+    <button id="loadRetry" x-show="bootFail" x-cloak class="btn" type="button" onclick="location.reload()">Neu laden</button>
+  </section>
 
   <!-- Login (Konten legt nur ein Admin an) -->
   <section x-show="view === 'auth'" x-cloak class="gate">
     <form @submit.prevent="submitAuth()" class="gcard">
       <span class="washi" aria-hidden="true"></span>
       <h2 x-text="{ login: 'Dein Jahr in Pixeln', reset: 'Passwort zurücksetzen', recover: 'Neues Passwort' }[authMode]"></h2>
-      <p class="lead" x-show="authMode !== 'recover'">Melde dich mit deinem mvs2-Konto an. YearInPixels zeigt dann, was du in DailyMind, im Migräne Tracker, im PegelTracker und in TravelBase erfasst hast.</p>
+      <p class="lead" x-show="authMode !== 'recover'">Melde dich mit deinem mvs2-Konto an. YearInPixels zeigt dann, was du in DailyMind, im KopfschmerzTracker, im PegelTracker und in TravelBase erfasst hast.</p>
       <p class="lead" x-show="authMode === 'recover'">Wähle ein neues Passwort mit mindestens 8 Zeichen.</p>
       <label x-show="authMode !== 'recover'">E-Mail
         <input type="email" x-model="form.email" :required="authMode !== 'recover'" autocomplete="email" placeholder="du@beispiel.de">
@@ -497,7 +565,7 @@ body{min-height:100vh;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
         </div>
 
         <div id="v-jahr">
-          <div class="nodata" id="jahrEmpty" hidden><h2 class="hd">Noch keine Pixel</h2><p>Sobald du DailyMind, den Migräne Tracker, den PegelTracker oder TravelBase nutzt, füllt sich hier dein Jahr. Ebenen erscheinen erst, wenn es Daten dazu gibt.</p></div>
+          <div class="nodata" id="jahrEmpty" hidden><h2 class="hd">Noch keine Pixel</h2><p>Sobald du DailyMind, den KopfschmerzTracker, den PegelTracker oder TravelBase nutzt, füllt sich hier dein Jahr. Ebenen erscheinen erst, wenn es Daten dazu gibt.</p></div>
           <div id="jahrBody">
           <div class="chips" id="chips" role="group" aria-label="Ebene wählen"></div>
           <p class="swipehint" id="swipehint">Tipp: Über dem Raster nach links oder rechts wischen wechselt die Ebene.</p>
@@ -517,6 +585,58 @@ body{min-height:100vh;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
             <select id="cut"><option value="0">00:00</option><option value="3">03:00</option><option value="4">04:00</option><option value="5">05:00</option><option value="6">06:00</option><option value="8">08:00</option><option value="10">10:00</option><option value="12">12:00</option></select></div>
           <p class="hint" id="cuthint">Ein Getränk vor der Tagesgrenze zählt zum Vortag.</p>
           <p class="hint">YearInPixels liest nur deine eigenen Einträge und speichert keine Tageswerte. Ebenen ohne Zugang zur Quell-App bleiben leer.</p>
+        </div>
+
+        <!-- Profil (nur Handy): Kontomenü als Seite -->
+        <div id="v-pr" hidden>
+          <div class="prof">
+            <div class="gcard">
+              <span class="washi" aria-hidden="true"></span>
+              <div class="pm-head">
+                <span class="pm-ava" :style="'background:' + me.color">
+                  <template x-if="me.photo"><img :src="me.photo" alt=""></template>
+                  <span x-show="!me.photo" x-text="me.initials"></span>
+                </span>
+                <div>
+                  <b x-text="me.name"></b>
+                  <small x-text="user?.email"></small>
+                  <span class="pm-role" x-show="me.role" x-text="roleLabel(me.role)"></span>
+                </div>
+              </div>
+              <div class="pm-theme">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>Darstellung
+                <div class="seg" role="group" aria-label="Darstellung">
+                  <button type="button" :aria-pressed="!dark" @click="dark && toggleTheme()">Hell</button>
+                  <button type="button" :aria-pressed="dark" @click="!dark && toggleTheme()">Dunkel</button>
+                </div>
+              </div>
+              <div class="pm-sync" role="status">
+                <div><i :class="syncLevel()"></i><span><b>Cloud-Sync</b> · <span x-text="syncText()"></span></span></div>
+              </div>
+            </div>
+
+            <div class="kpis">
+              <div class="kpi" style="--kb:var(--k11);--r:-.6deg"><span class="n" x-text="pixDays"></span><span class="l">Tage mit Pixeln</span></div>
+              <div class="kpi" style="--kb:var(--k07);--r:.7deg"><span class="n"><span x-text="srcCount().ok"></span><small> von <span x-text="srcCount().all"></span></small></span><span class="l">Quellen verbunden</span></div>
+            </div>
+
+            <div class="gcard">
+              <h3>Quellen</h3>
+              <div class="qsrc">
+                <template x-for="n in Object.keys(SOURCES)" :key="n">
+                  <a :href="SOURCES[n].url"><i :class="src[n] === 'ok' ? '' : 'no'"></i><span x-text="SOURCES[n].label || n"></span><small x-text="src[n] === 'ok' ? 'verbunden' : (src[n] === 'error' ? 'offline' : 'kein Zugang')"></small></a>
+                </template>
+              </div>
+            </div>
+
+            <div class="gcard">
+              <a class="pm-item" href="/"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg>Dashboard</a>
+              <a class="pm-item" :href="ACCOUNT_URL"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>Kontoeinstellungen</a>
+              <a class="pm-item" :href="ADMIN_URL" x-show="me.role === 'admin'"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 5 6v5c0 4.5 3 8.3 7 10 4-1.7 7-5.5 7-10V6z"/><path d="m9 12 2 2 4-4"/></svg>Admin-Einstellungen<small>nur Admins</small></a>
+              <div class="pm-sep"></div>
+              <button class="pm-item danger" type="button" @click="signOut()"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3M10 17l5-5-5-5M15 12H4"/></svg>Abmelden</button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -539,6 +659,15 @@ body{min-height:100vh;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
   </main>
 </div>
 
+<!-- Untere Tab-Leiste (nur Handy, siehe CSS) -->
+<nav class="tabbar" id="tabbar" aria-label="Navigation" x-show="view === 'app'" x-cloak>
+  <button type="button" data-v="jahr" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="16" height="16"/><path d="M4 10h16M4 15h16M10 4v16M15 4v16"/></svg>Jahr</button>
+  <button type="button" data-v="ov"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Übersicht</button>
+  <button type="button" data-v="eb"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h1M9 7h10M5 12h1M9 12h10M5 17h1M9 17h10"/></svg>Ebenen</button>
+  <button type="button" data-v="pr">
+    <span class="bar-ava" :style="'background:' + me.color"><template x-if="me.photo"><img :src="me.photo" alt=""></template><span x-show="!me.photo" x-text="me.initials"></span><span class="sync-dot" :class="syncLevel()"></span></span>Profil</button>
+</nav>
+
 <script>
   const SUPABASE_URL      = 'https://syaonnedmidaipwjjmio.supabase.co';  // Projekt "core"
   const SUPABASE_ANON_KEY = 'sb_publishable_a3tggKZJmotlFtIqKKdSYg_cNsazRkX';  // öffentlicher Publishable Key
@@ -549,7 +678,7 @@ body{min-height:100vh;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
   // Quellen: App-Name, Link und Zugangsprüfung (null = TravelBase, dort zählen die eigenen Reisen)
   const SOURCES = {
     DailyMind:    { url: '/DailyMind/',    rpc: 'dailymind_is_member' },
-    MigraLog:     { url: '/MigraLog/',     rpc: 'migralog_is_member', label: 'Migräne Tracker' },
+    MigraLog:     { url: '/MigraLog/',     rpc: 'migralog_is_member', label: 'KopfschmerzTracker' },
     PegelTracker: { url: '/PegelTracker/', rpc: 'pegel_is_member' },
     TravelBase:   { url: '/TravelBase/',   rpc: null },
   };
@@ -582,7 +711,7 @@ body{min-height:100vh;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
   var LAYERS=[
     {id:'mood',name:'Stimmung',col:'STIMMUNG',src:'DailyMind',steps:[['--k14','strahlend'],['--k12','gut'],['--k01','okay'],['--k03','trüb'],['--k04','schwer']]},
     {id:'energy',name:'Energie',col:'ENERGIE',src:'DailyMind',steps:[['--k14','voller Energie'],['--k12','hoch'],['--k01','mittel'],['--k03','niedrig'],['--k04','sehr niedrig']]},
-    {id:'migraine',name:'Migräne',col:'MIGRÄNE',src:'MigraLog',steps:[['--k14','frei'],['--k12','1 leicht'],['--k01','2'],['--k03','3'],['--k04','4'],['--k05','5 stark']]},
+    {id:'migraine',name:'Kopfschmerzen',col:'KOPFSCHMERZEN',src:'MigraLog',steps:[['--k14','frei'],['--k12','1 leicht'],['--k01','2'],['--k03','3'],['--k04','4'],['--k05','5 stark']]},
     // Index 7: nur DailyMind „+alkoholisch“, Menge unbekannt
     {id:'alcohol',name:'Alkohol',col:'ALKOHOL',src:'PegelTracker',src2:'DailyMind',unit:'Standardgetränke',steps:SEVEN.concat([['--k03','Menge unbekannt']])},
     {id:'water',name:'Wasser',col:'WASSER',src:'DailyMind',steps:[['--k14','genug getrunken'],['--k04','zu wenig']]},
@@ -660,7 +789,7 @@ body{min-height:100vh;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
     if(id==='migraine') return v===0?'schmerzfrei':'Schmerz '+v+' von 5';
     if(id==='travel') return (yearTrips(y)[v]||{}).title||'unterwegs';
     return L(id).steps[v][1];}
-  function collage(t){var st=['c1','c0','c0','c1','c2','c3','c1','c4','c2'];
+  function collage(t){var st=['c1','c0','c0','c1','c2','c3','c1','c4','c2']; $('collage').classList.toggle('lg',t.length>10);
     return t.split('').map(function(ch,i){return '<span class="'+st[(i*5+t.length)%st.length]+'" style="transform:rotate('+(((i*37)%7-3)*1.4)+'deg)">'+ch+'</span>'}).join('');}
 
   function gridHTML(id,mini){
@@ -695,7 +824,7 @@ body{min-height:100vh;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
     $('doodle').innerHTML=DOO[l.id];
     $('src').textContent='aus '+(SOURCES[l.src].label||l.src)+(l.src2?' + '+l.src2:'')+(l.unit?' · '+l.unit:'');
     $('chips').innerHTML=V.map(function(id,i){
-      return '<button type="button" data-l="'+id+'" aria-pressed="'+(id===state.layer)+'" style="--tb:var('+TAPES[i%7]+');--r:'+((i%3)-1)*1.2+'deg"><svg viewBox="0 0 48 48" aria-hidden="true">'+DOO[id]+'</svg>'+L(id).name+'</button>'}).join('');
+      return '<button type="button" data-l="'+id+'" aria-pressed="'+(id===state.layer)+'" style="--tb:var('+TAPES[i%7]+');--r:'+((i%3)-1)*1.2+'deg"'+(L(id).name.length>10?' class="lg"':'')+'><svg viewBox="0 0 48 48" aria-hidden="true">'+DOO[id]+'</svg>'+L(id).name+'</button>'}).join('');
     $('swipehint').hidden=V.length<2;
     $('grid').innerHTML=gridHTML(state.layer,false);
     if(!$('grid').querySelector('[tabindex="0"]')){var f=$('grid').querySelector('.today')||$('grid').querySelector('button.c'); if(f) f.tabIndex=0;}
@@ -733,7 +862,7 @@ body{min-height:100vh;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
         var txt=none?(id==='travel'?'zu Hause':'kein Eintrag'):detail(id,v,y,m,d), tg='';
         if(id==='smoke'&&v){tg=tags(y,m,d).map(function(t){return '<span class="tg">'+esc(t)+'</span>'}).join('');}
         var pips=(l.cat||none)?'':'<span class="pips" aria-hidden="true">'+l.steps.map(function(s,i){return '<span'+(i===v?' class="on" style="--f:var('+s[0]+')"':'')+'></span>'}).join('')+'</span>';
-        return '<div class="row'+(id===state.layer?' cur':'')+(none&&id!=='travel'?' none':'')+'"><i style="'+(none||!l.steps[v]?'':'--f:var('+l.steps[v][0]+')')+'"></i><span class="k">'+l.name+'</span><span class="v">'+esc(txt)+tg+'</span>'+pips+'</div>'}).join('')}).join('');
+        return '<div class="row'+(id===state.layer?' cur':'')+(none&&id!=='travel'?' none':'')+'"><i style="'+(none||!l.steps[v]?'':'--f:var('+l.steps[v][0]+')')+'"></i><span class="k'+(l.name.length>10?' lg':'')+'">'+l.name+'</span><span class="v">'+esc(txt)+tg+'</span>'+pips+'</div>'}).join('')}).join('');
   }
   var lastFocus=null;
   function openCard(m,d){state.sel=[m,d]; renderJahr(); $('card').classList.remove('off');
@@ -766,7 +895,7 @@ body{min-height:100vh;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
 
   function renderOv(){
     var y=state.year, V=vis();
-    if(!V.length){$('v-ov').innerHTML='<div class="nodata"><h2 class="hd">Noch nichts zu sehen</h2><p>Sobald du DailyMind, den Migräne Tracker, den PegelTracker oder TravelBase nutzt, erscheinen hier Auswertungen.</p></div>';return;}
+    if(!V.length){$('v-ov').innerHTML='<div class="nodata"><h2 class="hd">Noch nichts zu sehen</h2><p>Sobald du DailyMind, den KopfschmerzTracker, den PegelTracker oder TravelBase nutzt, erscheinen hier Auswertungen.</p></div>';return;}
     var s=stats(y), py=y-1>=MINY?stats(y-1):null; syncTravel();
     var am=avg(s.mood),ae=avg(s.energy),dry=pct(s.dry,s.alcN),sf=pct(s.sf,s.smN),caf=Math.round(avg(s.caf));
     var K=[
@@ -775,7 +904,7 @@ body{min-height:100vh;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
       {id:'alcohol',n:dry,u:'%',l:'trockene Tage',c:arrow(dry,py&&pct(py.dry,py.alcN),true,function(x){return Math.round(x)+' Pkt.'}),b:'--k18'},
       {id:'water',n:pct(s.wy,s.wN),u:'%',l:'genug getrunken',c:arrow(pct(s.wy,s.wN),py&&py.wN?pct(py.wy,py.wN):null,true,function(x){return Math.round(x)+' Pkt.'}),b:'--k06'},
       {id:'smoke',n:sf,u:'%',l:'rauchfreie Tage',c:arrow(sf,py&&py.smN?pct(py.sf,py.smN):null,true,function(x){return Math.round(x)+' Pkt.'}),b:'--k06'},
-      {id:'migraine',n:s.mig,u:'Tage',l:'mit Migräne',c:arrow(s.mig,py&&py.mig,false,function(x){return Math.round(x)}),b:'--k11'},
+      {id:'migraine',n:s.mig,u:'Tage',l:'mit Kopfschmerzen',c:arrow(s.mig,py&&py.mig,false,function(x){return Math.round(x)}),b:'--k11'},
       {id:'caffeine',n:caf,u:'mg',l:'Ø Koffein/Tag',c:arrow(caf,py&&Math.round(avg(py.caf)),false,function(x){return Math.round(x)+' mg'}),b:'--k12'},
       {id:'travel',n:s.trav,u:'Tage',l:'unterwegs',c:arrow(s.trav,py&&py.trav,true,function(x){return Math.round(x)}),b:'--k07'}
     ].filter(function(k){return has(k.id)});
@@ -797,9 +926,9 @@ body{min-height:100vh;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
       var ord=Object.keys(TC).map(function(t){return [t,TC[t]]}).sort(function(a,b){return b[1]-a[1]}).slice(0,5), mx=ord.length?ord[0][1]:1;
       if(ord.length) boxes.push('<div class="box wob"><h3>Wann getschickt?</h3>'+ord.map(function(o){return hbar(esc(o[0]),o[1],mx,'var(--k08)',o[1]+' T.')}).join('')+
       '<p class="why">Häufigste Zusatzinfos an '+sd+' Tagen mit Tschick. DailyMind.</p></div>');}
-    if(has('migraine')&&has('caffeine')) boxes.push('<div class="box wob"><h3>Migräne nach Koffein</h3>'+
+    if(has('migraine')&&has('caffeine')) boxes.push('<div class="box wob"><h3>Kopfschmerzen nach Koffein</h3>'+
       ['unter 200 mg','200–399 mg','ab 400 mg'].map(function(lb,i){var p=pct(C[i][0],C[i][1]); return hbar(lb,p,60,'var('+['--k12','--k03','--k04'][i]+')',C[i][1]?p+' %':'–')}).join('')+
-      '<p class="why">Anteil der Tage mit Schmerz ab 1, je Koffeinmenge am selben Tag. Migräne Tracker + PegelTracker.</p></div>');
+      '<p class="why">Anteil der Tage mit Schmerz ab 1, je Koffeinmenge am selben Tag. KopfschmerzTracker + PegelTracker.</p></div>');
     if(has('mood')&&has('travel')) boxes.push('<div class="box wob"><h3>Unterwegs oder zu Hause?</h3>'+
       ['unterwegs','zu Hause'].map(function(lb,i){var a=avg(T[i]); return hbar(lb,a,5,scoreColor('mood',a),T[i][1]?f1(a):'–')}).join('')+
       '<p class="why">Ø Stimmung an Reisetagen gegenüber den übrigen Tagen. DailyMind + TravelBase.</p></div>');
@@ -828,7 +957,7 @@ body{min-height:100vh;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
              ['Tage genug getrunken',s.wy,py.wy,s.wy-py.wy,true,'water'],
              ['rauchfreie Tage',s.sf,py.sf,s.sf-py.sf,true,'smoke'],
              ['Tschick gesamt',Math.round(s.cigs),Math.round(py.cigs),s.cigs-py.cigs,false,'smoke'],
-             ['Migränetage',s.mig,py.mig,s.mig-py.mig,false,'migraine'],
+             ['Kopfschmerztage',s.mig,py.mig,s.mig-py.mig,false,'migraine'],
              ['Reisetage',s.trav,py.trav,s.trav-py.trav,true,'travel']].filter(function(r){return has(r[5])});
       h+='<div class="sec box wob"><h3>'+y+' gegen '+(y-1)+'</h3><div class="yoy"><div class="r h"><span></span><span>'+y+'</span><span>'+(y-1)+'</span><span></span></div>'+
         R.map(function(r){var g=r[4]?r[3]>0:r[3]<0, eq=Math.abs(r[3])<.05; return '<div class="r"><span>'+r[0]+'</span><span>'+r[1]+'</span><span>'+r[2]+'</span><span class="'+(eq?'':g?'up':'dn')+'" aria-label="'+(eq?'gleich':g?'besser':'schlechter')+'">'+(eq?'=':r[3]>0?'↑':'↓')+'</span></div>'}).join('')+
@@ -850,8 +979,11 @@ body{min-height:100vh;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
     $('cutset').hidden=$('cuthint').hidden=!(avail('alcohol')||avail('caffeine')); $('cut').value=String(state.cutoff);
     $('missing').innerHTML=miss.length?'<b>Noch ohne Daten:</b> '+miss.map(function(l){return l.name+' ('+(SOURCES[l.src].label||l.src)+')'}).join(', ')+'. Diese Ebenen erscheinen automatisch, sobald es dort Einträge gibt.':'';
   }
-  function show(v){state.view=v;
-    ['jahr','ov','eb'].forEach(function(k){$('v-'+k).hidden=(k!==v); $('t-'+k).setAttribute('aria-selected',k===v)});
+  var MOB=matchMedia('(max-width: 767.98px)');
+  function show(v){if(v==='pr'&&!MOB.matches) v='jahr'; state.view=v;
+    ['jahr','ov','eb','pr'].forEach(function(k){$('v-'+k).hidden=(k!==v); if(k!=='pr') $('t-'+k).setAttribute('aria-selected',k===v)});
+    document.querySelectorAll('#tabbar button').forEach(function(b){if(b.dataset.v===v) b.setAttribute('aria-current','page'); else b.removeAttribute('aria-current');});
+    if(v==='pr'){closeCard(); $('pR').hidden=true; $('spread').classList.add('one'); $('yearbar').hidden=true; return;}
     syncTravel(); $('pR').hidden=(v!=='jahr'); $('spread').classList.toggle('one',v!=='jahr'); $('yearbar').hidden=(v==='eb');
     $('yPrev').disabled=state.year<=MINY; $('yNext').disabled=state.year>=MAXY;
     if(v==='jahr') renderJahr(); if(v==='ov') renderOv(); if(v==='eb') renderEb();}
@@ -881,6 +1013,10 @@ body{min-height:100vh;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
     if(b.dataset.up||b.dataset.dn){var id=b.dataset.up||b.dataset.dn, k=A.indexOf(id), t=A[k+(b.dataset.up?-1:1)]; i=o.indexOf(id); j=o.indexOf(t); o[i]=t; o[j]=id;}
     else if(b.dataset.t){var id2=b.dataset.t; if(state.on[id2]&&vis().length===1) return; state.on[id2]=state.on[id2]?0:1;}
     saveSettings(); renderEb();});
+  /* Handy-Leiste unten: gleiche Ansichten wie die Reiter, dazu Profil */
+  $('tabbar').addEventListener('click',function(e){var b=e.target.closest('button[data-v]'); if(!b) return; var same=b.dataset.v===state.view; show(b.dataset.v); saveUi(); if(!same) scrollTo(0,0);});
+  /* Profil gibt es nur auf dem Handy: breiter werden → zurück zum Jahr */
+  MOB.addEventListener('change',function(e){if(!e.matches&&state.view==='pr'){show('jahr');saveUi();}});
   $('t-jahr').onclick=function(){show('jahr');saveUi()}; $('t-ov').onclick=function(){show('ov');saveUi()}; $('t-eb').onclick=function(){show('eb');saveUi()};
   /* Pfeiltasten zwischen den Reitern */
   document.querySelector('.tabs').addEventListener('keydown',function(e){var k=['jahr','ov','eb'], i=k.indexOf(state.view);
@@ -903,7 +1039,7 @@ body{min-height:100vh;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
   return {
     // Einmal pro Anmeldung: Speicherort für Ansicht/Ebene und Rückruf zum Speichern der Einstellungen
     start:function(userId,saveFn){uiKey='yearinpixels-ui-'+userId; onSettings=saveFn;
-      try{var u=JSON.parse(localStorage.getItem(uiKey)||'null'); if(u){if(IDS.indexOf(u.layer)>=0) state.layer=u.layer; if(['jahr','ov','eb'].indexOf(u.view)>=0) state.view=u.view;}}catch(e){}},
+      try{var u=JSON.parse(localStorage.getItem(uiKey)||'null'); if(u){if(IDS.indexOf(u.layer)>=0) state.layer=u.layer; if(['jahr','ov','eb','pr'].indexOf(u.view)>=0) state.view=u.view;}}catch(e){}},
     settings:function(row){if(!row) return;
       var ls=(row.layers||[]).filter(function(id){return IDS.indexOf(id)>=0});
       state.order=ls.concat(IDS.filter(function(id){return ls.indexOf(id)<0}));
@@ -925,7 +1061,9 @@ body{min-height:100vh;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
 </script>
 
 <script>
-  const isOffline = e => !navigator.onLine || /fetch|network|load failed/i.test(String(e?.message || e));
+  const isOffline = e => !navigator.onLine || /fetch|network|load failed|timeout/i.test(String(e?.message || e));
+  // Netzanfragen nicht ewig warten lassen (z. B. schlechtes Netz oder App aus dem Hintergrund)
+  const withTimeout = (p, ms) => Promise.race([p, new Promise((_, j) => setTimeout(() => j(new Error('timeout')), ms))]);
 
   // Passwort gegen HaveIBeenPwned prüfen (nur die ersten 5 Zeichen des SHA-1 verlassen den Browser)
   async function pwnedCount(password) {
@@ -943,7 +1081,7 @@ body{min-height:100vh;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
   async function fetchAll(build) {
     let out = [];
     for (let from = 0; ; from += 1000) {
-      const { data, error } = await build().range(from, from + 999);
+      const { data, error } = await withTimeout(build().range(from, from + 999), 15000);
       if (error) throw error;
       out = out.concat(data || []);
       if (!data || data.length < 1000) return out;
@@ -971,11 +1109,20 @@ body{min-height:100vh;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
       lastSync: null,
       offlineNote: '',
       started: false,
+      booted: false,
+      bootFail: false,
+      bootMsg: 'YearInPixels wird geladen …',
+      pixDays: 0,
 
       // ------------------------------------------------------------
       // Start
       // ------------------------------------------------------------
       async init() {
+        window.yipReady = true;
+        // Start-Wächter: Ist nach 8 s weder Anmeldung noch App da, Sitzung selbst nachfragen, sonst „Neu laden“ anbieten
+        const bootTimer = setTimeout(() => this.bootWatch(), 8000);
+        this.$watch('view', v => { if (v !== 'loading') clearTimeout(bootTimer); });
+        if (!window.supabase) { clearTimeout(bootTimer); this.bootFailed(); return; }
         this.sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         this.sb.auth.onAuthStateChange((event, session) => {
@@ -987,7 +1134,11 @@ body{min-height:100vh;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
           }
         });
 
-        const { data: { session } } = await this.sb.auth.getSession();
+        let session = null;
+        try { ({ data: { session } } = await withTimeout(this.sb.auth.getSession(), 10000)); }
+        catch (e) { this.bootFailed(); return; }
+        if (this.view !== 'loading' || this.booted) return;
+        this.booted = true;
         if (session && this.authMode !== 'recover') { this.user = session.user; await this.checkAccess(); }
         else if (this.authMode !== 'recover') this.view = 'auth';
 
@@ -1006,8 +1157,24 @@ body{min-height:100vh;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
         window.addEventListener('beforeunload', () => { if (this.saveState === 'pending') this.save(); });
       },
 
+      async bootWatch() {
+        if (this.view !== 'loading') return;
+        this.bootMsg = 'Das dauert gerade länger als sonst …';
+        try {
+          const { data } = await withTimeout(this.sb.auth.getSession(), 6000);
+          if (this.view !== 'loading' || this.booted) return;
+          this.booted = true;
+          if (data.session) { this.user = data.session.user; await this.checkAccess(); } else this.view = 'auth';
+        } catch (e) { this.bootFailed(); }
+      },
+      bootFailed() {
+        if (this.view !== 'loading') return;
+        this.bootMsg = 'YearInPixels startet gerade nicht. Bitte neu laden.';
+        this.bootFail = true;
+      },
+
       reset() {
-        this.user = null; this.menuOpen = false; this.started = false; this.src = {};
+        this.user = null; this.pixDays = 0; this.menuOpen = false; this.started = false; this.src = {};
         this.me = { name: '', initials: '', color: AVATAR_COLORS[0], photo: null, role: null };
         YIP.reset();
         this.form.password = ''; this.switchAuth('login'); this.view = 'auth';
@@ -1024,10 +1191,10 @@ body{min-height:100vh;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
       // Name, Profilbild und App-Rolle aus dem gemeinsamen Konto (gilt für alle Apps)
       async loadMe() {
         const fallback = this.user.email.split('@')[0];
-        const [{ data: p }, { data: role }] = await Promise.all([
+        const [{ data: p }, { data: role }] = await withTimeout(Promise.all([
           this.sb.from('overall_profiles').select('display_name, avatar_path').eq('id', this.user.id).maybeSingle(),
           this.sb.rpc('overall_app_role', { p_app: APP_ID }),
-        ]);
+        ]), 10000);
         const name = p?.display_name || fallback;
         let h = 0; for (const c of name) h = (h * 31 + c.codePointAt(0)) >>> 0;
         let photo = null;
@@ -1049,11 +1216,15 @@ body{min-height:100vh;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
           try { Object.assign(this.me, JSON.parse(localStorage.getItem('yearinpixels-me-' + this.user.id)) || {}); } catch (_) {}
           if (!isOffline(e)) console.error(e);
         });
-        const { data, error } = await this.sb.rpc('yearinpixels_is_member');
+        let data, error;
+        try { ({ data, error } = await withTimeout(this.sb.rpc('yearinpixels_is_member'), 10000)); } catch (e) { error = e; }
         let ok = data === true;
         // Offline: letzte bekannte Freischaltung verwenden, damit das Jahr auch ohne Netz da ist
-        if (error) { if (isOffline(error)) { try { ok = localStorage.getItem(key) === '1'; } catch (_) {} } else console.error(error); }
+        let known = !error;
+        if (error) { if (isOffline(error)) { try { const c = localStorage.getItem(key); known = c !== null; ok = c === '1'; } catch (_) {} } else console.error(error); }
         else { try { localStorage.setItem(key, ok ? '1' : '0'); } catch (_) {} }
+        // Ohne Netz und ohne gemerkte Freischaltung: nicht „nicht freigeschaltet“ zeigen, sondern „Keine Verbindung“
+        if (!known && isOffline(error) && this.view === 'loading') { this.bootMsg = 'Keine Verbindung zum Server. Bitte neu laden.'; this.bootFail = true; return; }
         if (!ok) { this.view = 'noaccess'; return; }
         this.view = 'app';
         if (!this.started) {
@@ -1112,6 +1283,7 @@ body{min-height:100vh;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
         YIP.settings(c.settings);
         YIP.data(c.data);
         YIP.render();
+        this.pixDays = YIP.daysWithData();
       },
       loading: null,
       loadAll() {
@@ -1124,7 +1296,7 @@ body{min-height:100vh;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
         try {
           // Zugang je Quelle prüfen; ohne Zugang wird die Quelle gar nicht abgefragt
           const names = Object.keys(SOURCES);
-          const acc = await Promise.all(names.map(n => SOURCES[n].rpc ? this.sb.rpc(SOURCES[n].rpc) : Promise.resolve({ data: true })));
+          const acc = await withTimeout(Promise.all(names.map(n => SOURCES[n].rpc ? this.sb.rpc(SOURCES[n].rpc) : Promise.resolve({ data: true }))), 10000);
           const firstErr = acc.find(r => r.error);
           if (firstErr) throw firstErr.error;
           const src = {}; names.forEach((n, i) => src[n] = acc[i].data === true ? 'ok' : 'noaccess');
@@ -1137,13 +1309,13 @@ body{min-height:100vh;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
           if (src.PegelTracker === 'ok') jobs.push(fetchAll(() => this.sb.from('pegel_drinks').select('consumed_at, volume_ml, abv, caffeine_mg').eq('user_id', uid).order('consumed_at'))
             // Standardgetränk = 10 g Alkohol: ml × Vol-% / 100 × 0,8 g/ml / 10
             .then(rows => { d.drinks = rows.map(r => [Date.parse(r.consumed_at), (+r.volume_ml) * (+r.abv) / 100 * 0.8 / 10, +r.caffeine_mg || 0]); }));
-          jobs.push(this.sb.rpc('travelbase_my_trips').then(({ data, error }) => {
+          jobs.push(withTimeout(this.sb.rpc('travelbase_my_trips'), 15000).catch(error => ({ error })).then(({ data, error }) => {
             if (error) { src.TravelBase = isOffline(error) ? 'error' : 'noaccess'; return; }
             d.trips = (data || []).filter(t => t.start_date).map(t => ({ title: t.title || 'Reise', start: t.start_date, end: t.end_date || t.start_date }));
           }));
           const settingsJob = this.sb.from('yearinpixels_settings').select('layers, day_cutoff_hour').eq('user_id', uid).maybeSingle();
           await Promise.all(jobs);
-          const { data: settings, error: sErr } = await settingsJob;
+          const { data: settings, error: sErr } = await withTimeout(settingsJob, 10000);
           if (sErr) throw sErr;
 
           this.src = src; this.lastSync = new Date(); this.offlineNote = '';
@@ -1151,7 +1323,7 @@ body{min-height:100vh;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
           // Wartet noch eine Änderung, gilt die lokale Version
           const pending = this.readQueue().settings || this.pendingRow;
           const eff = pending || settings;
-          YIP.settings(eff); YIP.data(d); YIP.render();
+          YIP.settings(eff); YIP.data(d); YIP.render(); this.pixDays = YIP.daysWithData();
           try { localStorage.setItem(this.cacheKey(), JSON.stringify({ at: Date.now(), src, settings: eff, data: d, days: YIP.daysWithData() })); } catch (_) {}
         } catch (e) {
           if (isOffline(e)) { this.saveState = 'offline'; this.offlineNote = 'Offline: Du siehst den Stand vom ' + (this.lastSync ? this.lastSync.toLocaleString('de-DE', { dateStyle: 'short', timeStyle: 'short' }) : 'letzten Besuch') + '.'; }
@@ -1231,6 +1403,13 @@ body{min-height:100vh;-webkit-tap-highlight-color:transparent;overflow-x:hidden}
     };
   }
 
+  // Falls die App gar nicht startet (z. B. Alpine oder supabase-js nicht geladen): nach 8 s „Neu laden“ anbieten
+  setTimeout(() => {
+    const l = document.getElementById('loadView');
+    if (window.yipReady || !l || getComputedStyle(l).display === 'none') return;
+    document.getElementById('loadMsg').textContent = 'YearInPixels startet gerade nicht. Bitte neu laden.';
+    const b = document.getElementById('loadRetry'); b.removeAttribute('x-cloak'); b.style.display = '';
+  }, 8000);
   if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
 </script>
 </body>

@@ -2,7 +2,7 @@
   "id": "yearinpixels-app",
   "name": "YearInPixels",
   "short_name": "YearInPixels",
-  "description": "Dein Jahr als Pixel-Tracker aus DailyMind, Migräne Tracker, PegelTracker und TravelBase.",
+  "description": "Dein Jahr als Pixel-Tracker aus DailyMind, KopfschmerzTracker, PegelTracker und TravelBase.",
   "lang": "de",
   "start_url": "./",
   "scope": "./",
